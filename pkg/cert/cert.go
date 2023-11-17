@@ -10,6 +10,7 @@ import (
 	"github.com/icza/gox/timex"
 	"strings"
 	"time"
+	"crypto/sha1"
 )
 
 const certificateBlockType = "CERTIFICATE"
@@ -151,7 +152,7 @@ func (c Certificate) String() string {
 
 	return strings.Join([]string{
 		fmt.Sprintf("Version: %d", c.x509Certificate.Version),
-		fmt.Sprintf("Serial Number: %d", c.x509Certificate.SerialNumber),
+		fmt.Sprintf("Serial Number: %d (%018x)", c.x509Certificate.SerialNumber, c.x509Certificate.SerialNumber),
 		fmt.Sprintf("Signature Algorithm: %s", c.x509Certificate.SignatureAlgorithm),
 		fmt.Sprintf("Type: %s", CertificateType(c.x509Certificate)),
 		fmt.Sprintf("Issuer: %s", c.x509Certificate.Issuer),
@@ -166,6 +167,7 @@ func (c Certificate) String() string {
 		fmt.Sprintf("Key Usage: %s", strings.Join(keyUsage, ", ")),
 		fmt.Sprintf("Ext Key Usage: %s", strings.Join(extKeyUsage, ", ")),
 		fmt.Sprintf("CA: %t", c.x509Certificate.IsCA),
+		fmt.Sprintf("Fingerprint (Sha1): %x", sha1.Sum(c.x509Certificate.Raw)),
 	}, "\n")
 }
 
